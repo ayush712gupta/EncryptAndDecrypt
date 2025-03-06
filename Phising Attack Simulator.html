@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Attack Simulator</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #2c3e50;
+            padding: 50px;
+            color: white;
+        }
+        .container {
+            background: #ecf0f1;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            color: black;
+        }
+        .email-box {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            text-align: left;
+            background: #fff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .real { background: #27ae60; color: white; }
+        .phish { background: #e74c3c; color: white; }
+        .real:hover { background: #219150; }
+        .phish:hover { background: #c0392b; }
+        .feedback { font-weight: bold; margin-top: 10px; font-size: 18px; }
+        .score { margin-top: 20px; font-size: 18px; font-weight: bold; }
+        .end-screen {
+            display: none;
+            background: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="gameScreen">
+        <h2>Phishing Attack Simulator</h2>
+        <div class="email-box" id="emailBox">Loading email...</div>
+        <button class="real" onclick="checkAnswer(true)">Real</button>
+        <button class="phish" onclick="checkAnswer(false)">Phishing</button>
+        <p class="feedback" id="feedbackText"></p>
+        <p class="score" id="scoreText">Score: 0/5</p>
+    </div>
+    
+    <div class="end-screen" id="endScreen">
+        <h2>Game Over</h2>
+        <p id="finalScore"></p>
+        <button onclick="restartGame()">Restart</button>
+    </div>
+
+    <script>
+        const emails = [
+            { text: "Your account has been compromised! Click here to secure it: http://secure-login123.com", isPhishing: true },
+            { text: "Amazon: Your recent order has been shipped. Track it here: https://www.amazon.com/orders", isPhishing: false },
+            { text: "Congratulations! You've won a free iPhone! Claim now: http://win-free-prizes.com", isPhishing: true },
+            { text: "Google: Unusual sign-in detected. Verify your account: https://accounts.google.com/security", isPhishing: false },
+            { text: "Your bank detected suspicious activity. Confirm your details now: http://secure-banking-alerts.com", isPhishing: true }
+        ];
+        
+        let currentEmail = {};
+        let score = 0;
+        let attempts = 0;
+        const maxAttempts = 5;
+
+        function loadEmail() {
+            if (attempts >= maxAttempts) {
+                endGame();
+                return;
+            }
+            currentEmail = emails[Math.floor(Math.random() * emails.length)];
+            document.getElementById('emailBox').textContent = currentEmail.text;
+            document.getElementById('feedbackText').textContent = "";
+        }
+
+        function checkAnswer(userChoice) {
+            const feedback = document.getElementById('feedbackText');
+            if (userChoice === currentEmail.isPhishing) {
+                feedback.textContent = "✅ Correct!";
+                feedback.style.color = "green";
+                score++;
+            } else {
+                feedback.textContent = "❌ Incorrect. Be cautious!";
+                feedback.style.color = "red";
+            }
+            attempts++;
+            document.getElementById('scoreText').textContent = `Score: ${score}/${maxAttempts}`;
+            setTimeout(loadEmail, 2000);
+        }
+
+        function endGame() {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('endScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Final Score: ${score}/${maxAttempts}`;
+        }
+
+        function restartGame() {
+            score = 0;
+            attempts = 0;
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('endScreen').style.display = 'none';
+            document.getElementById('scoreText').textContent = `Score: 0/${maxAttempts}`;
+            loadEmail();
+        }
+
+        loadEmail();
+    </script>
+</body>
+</html>

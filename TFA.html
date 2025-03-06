@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Authentication (2FA) Demo</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #2c3e50;
+            text-align: center;
+            color: white;
+            padding: 50px;
+        }
+        .container {
+            background: #ecf0f1;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            color: black;
+            width: 300px;
+        }
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            background: #27ae60;
+            color: white;
+            transition: 0.3s;
+            width: 100%;
+        }
+        button:hover { background: #219150; }
+        .message {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="loginScreen">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Enter username" required><br>
+        <input type="password" id="password" placeholder="Enter password" required><br>
+        <button onclick="sendOTP()">Login</button>
+        <p class="message" id="loginMessage"></p>
+    </div>
+
+    <div class="container" id="otpScreen" style="display: none;">
+        <h2>Enter OTP</h2>
+        <p>We sent a 6-digit code to your registered number.</p>
+        <input type="text" id="otp" placeholder="Enter OTP" required><br>
+        <button onclick="verifyOTP()">Verify OTP</button>
+        <p class="message" id="otpMessage"></p>
+    </div>
+
+    <div class="container" id="successScreen" style="display: none;">
+        <h2>✅ Login Successful</h2>
+        <p>Welcome to your account!</p>
+    </div>
+
+    <script>
+        let generatedOTP = "";
+        
+        function sendOTP() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            if (username === "" || password === "") {
+                document.getElementById("loginMessage").textContent = "❌ Please enter credentials";
+                return;
+            }
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            alert("Your OTP is: " + generatedOTP); // Simulating OTP delivery
+            document.getElementById("loginScreen").style.display = "none";
+            document.getElementById("otpScreen").style.display = "block";
+        }
+        
+        function verifyOTP() {
+            const enteredOTP = document.getElementById("otp").value;
+            if (enteredOTP === generatedOTP) {
+                document.getElementById("otpScreen").style.display = "none";
+                document.getElementById("successScreen").style.display = "block";
+            } else {
+                document.getElementById("otpMessage").textContent = "❌ Invalid OTP. Try again.";
+            }
+        }
+    </script>
+</body>
+</html>
